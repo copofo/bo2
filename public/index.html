@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WhatsApp Web</title>
+</head>
+<body>
+  <h1>WhatsApp Web</h1>
+  <div id="qrcode"></div>
+
+  <script>
+    const socket = new WebSocket('ws://localhost:8080');
+
+    socket.onopen = function() {
+      console.log('Conexão WebSocket estabelecida.');
+
+      // Solicitar o QR Code
+      socket.send('request_qrcode');
+    };
+
+    socket.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+
+      if (data.type === 'qrcode') {
+        const qrCodeElement = document.getElementById('qrcode');
+        qrCodeElement.innerHTML = `<img src="${data.qrCode}" alt="QR Code" />`;
+      }
+    };
+  </script>
+</body>
+</html>
